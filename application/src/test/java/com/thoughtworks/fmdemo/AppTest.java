@@ -12,4 +12,9 @@ public class AppTest {
         assertThat(true, is(true));
 
     }
+
+	@Test
+	public void shouldFailToTestCI() {
+		assertThat(false, is(true));
+	}
 }
