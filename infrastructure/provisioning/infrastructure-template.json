@@ -167,10 +167,19 @@
       "DependsOn" : "VPCGatewayAttachment"
     },
 
-    "EIPCISlave" : {
+    "EIPCIAgent1" : {
       "Type" : "AWS::EC2::EIP",
       "Properties" : {
-        "InstanceId" : { "Ref" : "EC2InstanceCISlave" },
+        "InstanceId" : { "Ref" : "EC2InstanceCIAgent1" },
+        "Domain" : "vpc"
+      },
+      "DependsOn" : "VPCGatewayAttachment"
+    },
+
+    "EIPCIAgent2" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : { "Ref" : "EC2InstanceCIAgent2" },
         "Domain" : "vpc"
       },
       "DependsOn" : "VPCGatewayAttachment"
@@ -188,7 +197,7 @@
       }
     },
 
-    "EC2InstanceCISlave" : {
+    "EC2InstanceCIAgent1" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
         "ImageId" : "ami-20bd1f57",
@@ -196,7 +205,19 @@
         "KeyName" : "eu-west-1",
         "SubnetId" : { "Ref" : "Subnet" },
         "SecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
-        "Tags" : [ { "Key" : "Name", "Value" : "CI slave" } ]
+        "Tags" : [ { "Key" : "Name", "Value" : "CI agent" } ]
+      }
+    },
+
+    "EC2InstanceCIAgent2" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-20bd1f57",
+        "InstanceType" : "m1.medium",
+        "KeyName" : "eu-west-1",
+        "SubnetId" : { "Ref" : "Subnet" },
+        "SecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
+        "Tags" : [ { "Key" : "Name", "Value" : "CI agent" } ]
       }
     }
   },
@@ -207,8 +228,12 @@
       "Value" : { "Fn::GetAtt" : [ "EC2InstanceCIMaster", "PublicIp" ] }
     },
 
-    "CISlavePublicIp" : {
-      "Value" : { "Fn::GetAtt" : [ "EC2InstanceCISlave", "PublicIp" ] }
+    "CIAgent1PublicIp" : {
+      "Value" : { "Fn::GetAtt" : [ "EC2InstanceCIAgent1", "PublicIp" ] }
+    },
+
+    "CIAgent2PublicIp" : {
+      "Value" : { "Fn::GetAtt" : [ "EC2InstanceCIAgent2", "PublicIp" ] }
     },
 
     "CIMasterPrivateIp" : {

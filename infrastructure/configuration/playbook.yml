@@ -20,6 +20,14 @@
     apt: name=unzip update_cache=yes state=present
     sudo: true
 
+  - name: ensure that git is installed
+    apt: name=git update_cache=yes state=present
+    sudo: true
+
+  - name: ensure that maven is installed
+    apt: name=maven update_cache=yes state=present
+    sudo: true
+
   - name: reboot if required
     command: /sbin/reboot removes=/var/run/reboot-required
     sudo: true
@@ -51,16 +59,16 @@
     sudo: true
 
 
-- hosts: ci-slave
+- hosts: ci-agent1
 
   tasks:
 
-  - name: ensure the instance hostname is set to ci-slave
-    hostname: name=ci-slave
+  - name: ensure the instance hostname is set to ci-agent1
+    hostname: name=ci-agent1
     sudo: true
 
-  - name: ensure that the hosts file has the hostname ci-slave
-    lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1 localhost' line="127.0.0.1 localhost ci-slave"
+  - name: ensure that the hosts file has the hostname ci-agent1
+    lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1 localhost' line="127.0.0.1 localhost ci-agent1"
     sudo: true
 
   - name: ensure that the go agent deb has been downloaded
@@ -78,6 +86,38 @@
     notify: restart the go agent
     sudo: true
 
+  handlers:
+
+  - name: restart the go agent
+    service: name=go-agent state=restarted
+    sudo: true
+
+- hosts: ci-agent2
+
+  tasks:
+
+  - name: ensure the instance hostname is set to ci-agent2
+    hostname: name=ci-agent2
+    sudo: true
+
+  - name: ensure that the hosts file has the hostname ci-agent2
+    lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1 localhost' line="127.0.0.1 localhost ci-agent2"
+    sudo: true
+
+  - name: ensure that the go agent deb has been downloaded
+    get_url: url=http://download.go.cd/gocd-deb/go-agent-14.2.0-377.deb dest=/tmp/go-agent.deb
+
+  - name: ensure that the go agent deb has been installed
+    raw: sudo dpkg --force-confold -i /tmp/go-agent.deb
+
+  - name: ensure that the go agent is running
+    service: name=go-agent state=started
+    sudo: true
+
+  - name: ensure that the go agent knows where to find the go server
+    lineinfile: dest=/etc/default/go-agent regexp='^GO_SERVER=' line="GO_SERVER={{ ci_master_private_ip }}"
+    notify: restart the go agent
+    sudo: true
 
   handlers:
 
