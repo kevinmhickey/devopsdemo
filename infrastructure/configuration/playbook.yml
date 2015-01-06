@@ -28,6 +28,10 @@
     apt: name=maven update_cache=yes state=present
     sudo: true
 
+  - name: ensure that svn is installed
+    apt: name=subversion update_cache=yes state=present
+    sudo: true
+
   - name: reboot if required
     command: /sbin/reboot removes=/var/run/reboot-required
     sudo: true
@@ -124,3 +128,9 @@
   - name: restart the go agent
     service: name=go-agent state=restarted
     sudo: true
+
+- hosts: nexus
+
+  roles:
+  
+  - aalda.nexus-oss

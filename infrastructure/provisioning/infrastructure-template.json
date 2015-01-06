@@ -18,7 +18,7 @@
       "Properties" : {
         "VpcId" : { "Ref" : "VPC" },
         "CidrBlock" : "10.0.0.0/24",
-        "AvailabilityZone" : "eu-west-1a",
+        "AvailabilityZone" : "us-east-1a",
         "Tags" : [ {"Key" : "Name", "Value" : "devops-part-three"} ]
       }
     },
@@ -185,12 +185,21 @@
       "DependsOn" : "VPCGatewayAttachment"
     },
 
+    "EIPCINexus" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : { "Ref" : "EC2InstanceNexus" },
+        "Domain" : "vpc"
+      },
+      "DependsOn" : "VPCGatewayAttachment"
+    },
+
     "EC2InstanceCIMaster" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
-        "ImageId" : "ami-20bd1f57",
+        "ImageId" : "ami-3acc7a52",
         "InstanceType" : "m1.medium",
-        "KeyName" : "eu-west-1",
+        "KeyName" : "us-east-1",
         "SubnetId" : { "Ref" : "Subnet" },
         "SecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
         "Tags" : [ { "Key" : "Name", "Value" : "CI master" } ]
@@ -200,9 +209,9 @@
     "EC2InstanceCIAgent1" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
-        "ImageId" : "ami-20bd1f57",
+        "ImageId" : "ami-3acc7a52",
         "InstanceType" : "m1.medium",
-        "KeyName" : "eu-west-1",
+        "KeyName" : "us-east-1",
         "SubnetId" : { "Ref" : "Subnet" },
         "SecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
         "Tags" : [ { "Key" : "Name", "Value" : "CI agent" } ]
@@ -212,12 +221,24 @@
     "EC2InstanceCIAgent2" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
-        "ImageId" : "ami-20bd1f57",
+        "ImageId" : "ami-3acc7a52",
         "InstanceType" : "m1.medium",
-        "KeyName" : "eu-west-1",
+        "KeyName" : "us-east-1",
         "SubnetId" : { "Ref" : "Subnet" },
         "SecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
         "Tags" : [ { "Key" : "Name", "Value" : "CI agent" } ]
+      }
+    },
+
+    "EC2InstanceNexus" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-3acc7a52",
+        "InstanceType" : "m1.medium",
+        "KeyName" : "us-east-1",
+        "SubnetId" : { "Ref" : "Subnet" },
+        "SecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
+        "Tags" : [ { "Key" : "Name", "Value" : "Nexus Server" } ]
       }
     }
   },
@@ -236,8 +257,17 @@
       "Value" : { "Fn::GetAtt" : [ "EC2InstanceCIAgent2", "PublicIp" ] }
     },
 
+    "NexusPublicIp" : {
+      "Value" : { "Fn::GetAtt" : [ "EC2InstanceNexus", "PublicIp" ] }
+    },
+
+    "NexusPrivateIp" : {
+      "Value" : { "Fn::GetAtt" : [ "EC2InstanceNexus", "PrivateIp" ] }
+    },
+
     "CIMasterPrivateIp" : {
       "Value" : { "Fn::GetAtt" : [ "EC2InstanceCIMaster", "PrivateIp" ] }
     }
+
   }
 }
