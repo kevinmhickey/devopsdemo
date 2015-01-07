@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.thoughtworks.fmdemo</groupId>
-  <artifactId>fmdemo</artifactId>
+  <artifactId>fmdemo-gui</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>fmdemo</name>
@@ -15,6 +15,18 @@
           <scope>test</scope>
       </dependency>
   </dependencies>
+  <distributionManagement>
+  <repository>
+     <id>deployment</id>
+     <name>Internal Releases</name>
+     <url>http://10.0.0.112:8081/nexus/content/repositories/releases/</url>
+  </repository>
+  <snapshotRepository>
+     <id>deployment</id>
+     <name>Internal Releases</name>
+     <url>http://10.0.0.112:8081/nexus/content/repositories/snapshots/</url>
+  </snapshotRepository>
+</distributionManagement>
   <build>
   	<plugins>
 		<plugin>
