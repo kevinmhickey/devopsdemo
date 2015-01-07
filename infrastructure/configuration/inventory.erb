@@ -1,0 +1,17 @@
+[ci-master]
+<%=outputs["CIMasterPublicIp"]%>
+
+[ci-agent1]
+<%=outputs["CIAgent1PublicIp"]%>
+
+[ci-agent2]
+<%=outputs["CIAgent2PublicIp"]%>
+
+[nexus]
+<%=outputs["NexusPublicIp"]%>
+
+[ci-agent1:vars]
+ci_master_private_ip=<%=outputs["CIMasterPrivateIp"]%>
+
+[ci-agent2:vars]
+ci_master_private_ip=<%=outputs["CIMasterPrivateIp"]%>
